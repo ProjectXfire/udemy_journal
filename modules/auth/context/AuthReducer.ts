@@ -5,6 +5,8 @@ interface IAuthState {
   name: string;
 }
 
+type x = { type: "hola" };
+
 type IAction =
   | { type: "[Auth]: Login"; payload: IUser }
   | { type: "[Auth]: Logout" };
