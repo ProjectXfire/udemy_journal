@@ -1,4 +1,4 @@
-export { CJournalList } from "./CJournalList";
+export { CJournalEntries } from "./CJournalEntries";
 export { CJournal } from "./CJournal";
 export { CEmptyScreen } from "./CEmptyScreen";
-export { CWritingJournal } from "./CWritingJournal";
+export { CJournalEntry } from "./CJournalEntry";

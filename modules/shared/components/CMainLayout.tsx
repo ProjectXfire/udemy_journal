@@ -1,7 +1,13 @@
-import React, { FC } from "react";
+import React, { FC, useEffect } from "react";
 import Head from "next/head";
+import { useRouter } from "next/router";
 // External libraries
 import { Container } from "@mui/material";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { useSelector } from "react-redux";
+// Dispatch actions & state
+import { RootState, useAppDispatch } from "@modules/store";
+import { setUser } from "@modules/store/reducers";
 // Components
 import { CSidebar } from "@modules/shared/components";
 
@@ -13,7 +19,30 @@ interface Props {
 }
 
 export const CMainLayout: FC<Props> = ({ children, title, name, content }) => {
+  //******** HOOKS ********//
+
+  const dispatch = useAppDispatch();
+  const router = useRouter();
+  const { uid } = useSelector((state: RootState) => state.auth);
+
+  //******** EFFECTS ********//
+
+  useEffect(() => {
+    const auth = getAuth();
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        dispatch(setUser({ name: user.email!, uid: user.uid }));
+      } else {
+        router.replace("/auth/login");
+      }
+    });
+  }, []);
+
   //******** RENDERS ********//
+
+  if (!uid) {
+    return <Container />;
+  }
 
   return (
     <>

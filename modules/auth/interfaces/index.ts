@@ -1,1 +1,1 @@
-export { type IUser } from "./IUser";
+export { type IUser, type IUserCreateDto, type IUserDto } from "./IUser";

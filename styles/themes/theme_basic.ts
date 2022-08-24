@@ -3,7 +3,7 @@ import { createTheme } from "@mui/material/styles";
 export const basicTheme = createTheme({
   palette: {
     background: {
-      paper: "#37474f",
+      paper: "#263238",
     },
     mode: "dark",
     primary: {
@@ -34,6 +34,11 @@ export const basicTheme = createTheme({
         root: {
           color: "white",
         },
+      },
+    },
+    MuiInputLabel: {
+      defaultProps: {
+        color: "info",
       },
     },
   },

@@ -19,10 +19,21 @@ import {
   MenuBookOutlined,
   Close,
 } from "@mui/icons-material";
+import { useSelector } from "react-redux";
+// Dispatch actions & state
+import {
+  setStartedLoading,
+  setFinishedloading,
+  logoutSession,
+  setCleanStatus,
+  setErrorMessage,
+  newNote,
+} from "@modules/store/reducers";
+import { RootState, useAppDispatch } from "@modules/store";
 // Context
 import { UIContext } from "@modules/shared/context";
 // Components
-import { CJournalList } from "@modules/journal/components";
+import { CJournalEntries } from "@modules/journal/components";
 
 export const CSidebar = () => {
   //******** HOOKS ********//
@@ -32,12 +43,34 @@ export const CSidebar = () => {
     toggleMenu,
   } = useContext(UIContext);
   const router = useRouter();
+  const { errorMessage, loading } = useSelector((state: RootState) => state.ui);
+  const { name, uid } = useSelector((state: RootState) => state.auth);
+  const dispatch = useAppDispatch();
 
   //******** METHODS ********//
 
   const navigateTo = (path: string) => {
     router.push(path);
     toggleMenu();
+  };
+
+  const onLogout = () => {
+    dispatch(logoutSession())
+      .then(() => {
+        navigateTo("/auth/login");
+        dispatch(setCleanStatus());
+      })
+      .catch((err) => dispatch(setErrorMessage(err.message)));
+  };
+
+  const addNewNote = () => {
+    dispatch(setStartedLoading());
+    dispatch(newNote({ uid }))
+      .then(() => {
+        dispatch(setFinishedloading());
+        toggleMenu();
+      })
+      .catch((err) => dispatch(setErrorMessage(err)));
   };
 
   //******** RENDERS ********//
@@ -58,34 +91,28 @@ export const CSidebar = () => {
             sx={{ display: "flex", alignItems: "center" }}
             variant="body2"
           >
-            <MenuBookOutlined sx={{ mr: 1 }} /> GbDeveloper
+            <MenuBookOutlined sx={{ mr: 1 }} /> {name}
           </Typography>
           <IconButton onClick={toggleMenu}>
             <Close />
           </IconButton>
         </Box>
         <Button
+          type="button"
           sx={{ mt: 2 }}
           startIcon={<AddCircleOutlineOutlined />}
           variant="contained"
+          disabled={loading}
+          onClick={addNewNote}
         >
-          Add new entry
+          Add new note
         </Button>
       </Box>
-      <CJournalList />
+      <CJournalEntries />
       <List sx={{ width: "100%", maxWidth: 360 }} component="nav">
         <ListItemButton
           sx={{ borderBottom: "1px solid grey" }}
-          onClick={() => navigateTo("/")}
-        >
-          <ListItemIcon>
-            <Home />
-          </ListItemIcon>
-          <ListItemText primary="Home" />
-        </ListItemButton>
-        <ListItemButton
-          sx={{ borderBottom: "1px solid grey" }}
-          onClick={() => navigateTo("/")}
+          onClick={() => onLogout()}
         >
           <ListItemIcon>
             <Logout />

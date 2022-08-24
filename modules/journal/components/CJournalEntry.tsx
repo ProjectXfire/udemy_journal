@@ -7,7 +7,7 @@ import { UIContext } from "@modules/shared/context";
 // Components
 import { CNote } from "@modules/notes/components";
 
-export const CWritingJournal = () => {
+export const CJournalEntry = () => {
   //******** HOOKS ********//
 
   const { toggleMenu } = useContext(UIContext);
